@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>お持ち帰りの注文｜友多加亭</title>
+  <meta name="description" content="友多加亭のお持ち帰りメニュー。お弁当は730円から、大盛り無料。画面で選んで、お電話でご注文ください。お店で受け取り、お支払いは現金のみです。">
+  <!-- テスト版：検索に載せない。本番公開のときにこの行を消す -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#FBF6EC">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="icon" href="images/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Yomogi&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=4">
+</head>
+<body>
+
+<svg xmlns="http://www.w3.org/2000/svg" class="sprite" aria-hidden="true">
+  <symbol id="i-phone" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 7h6l3 8-4 3c2 4 6 8 10 10l3-4 8 3v6c0 2-2 4-4 4C21 37 11 27 11 11c0-2 2-4 4-4z"/>
+  </symbol>
+  <symbol id="i-show" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="13" y="5" width="22" height="38" rx="4"/><path d="M19 15h10M19 22h10M19 29h6"/>
+  </symbol>
+  <symbol id="i-arrow" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 10l14 14-14 14"/>
+  </symbol>
+</svg>
+
+<p class="test-banner">テスト版です（確認中の内容をふくみます）</p>
+<div class="gingham" aria-hidden="true"></div>
+
+<header class="subhead">
+  <p class="subhead__top"><a class="back" href="index.html"><svg aria-hidden="true"><use href="#i-arrow"/></svg>トップへもどる</a></p>
+  <div class="brand">
+    <img class="brand__mascot" src="images/mascot-wink.png" width="533" height="560" alt="">
+    <div class="brand__text">
+      <p class="brand__area">友多加亭</p>
+      <h1 class="subhead__title">お持ち帰りの注文</h1>
+    </div>
+  </div>
+  <p class="subhead__copy"><span class="marker">お弁当、できます。大盛り無料です。</span></p>
+  <ul class="tags">
+    <li class="tag">お店で受け取り</li>
+    <li class="tag">お支払いは現金のみ</li>
+  </ul>
+  <ol class="steps" aria-label="注文の流れ">
+    <li>メニューを<br>えらぶ</li>
+    <li>電話で<br>注文する</li>
+    <li>お店で<br>受け取る</li>
+  </ol>
+</header>
+
+<p class="alert" id="closed-note" hidden>ただいま営業時間外です。お電話は <span data-open>11:00</span> からつながります。</p>
+
+<main>
+  <section class="sec sec--order" aria-labelledby="bento-title">
+    <h2 class="sec__title" id="bento-title">お弁当<span class="sec__badge">大盛り無料</span></h2>
+    <div class="menu" id="bento-list"></div>
+  </section>
+
+  <section class="sec sec--order" aria-labelledby="salad-title">
+    <h2 class="sec__title" id="salad-title">サラダ</h2>
+    <div class="menu" id="salad-list"></div>
+  </section>
+
+  <section class="sec sec--order" aria-labelledby="time-title">
+    <h2 class="sec__title" id="time-title">受け取り時間</h2>
+    <div class="field">
+      <select id="pickup" aria-labelledby="time-title"></select>
+    </div>
+    <p class="note">できあがりの時間は、お電話でお伝えします。</p>
+  </section>
+
+  <section class="sec sec--order" id="memo" aria-labelledby="memo-title">
+    <h2 class="sec__title" id="memo-title">注文メモ</h2>
+    <div class="memo" aria-live="polite">
+      <p class="memo__empty" id="memo-empty">メニューを選ぶと、ここに注文メモが出ます。</p>
+      <div id="memo-body" hidden>
+        <ul class="memo__list" id="memo-list"></ul>
+        <p class="memo__line"><span>合計</span><span><b id="memo-total">0</b>円</span></p>
+        <p class="memo__line memo__line--time"><span>受け取り</span><b id="memo-time"></b></p>
+        <div class="memo__say">
+          <span class="memo__say-label">お電話では、こう伝えてください</span>
+          <span id="memo-say"></span>
+        </div>
+        <p class="memo__pay">お支払いは、受け取りのときに現金でお願いします。</p>
+      </div>
+    </div>
+
+    <div class="send">
+      <a class="bigbtn bigbtn--takeout" id="call" href="tel:0486531038" data-tel="keep">
+        <span class="bigbtn__icon"><svg aria-hidden="true"><use href="#i-phone"/></svg></span>
+        <span class="bigbtn__text">
+          <span class="bigbtn__main">電話で注文する</span>
+          <span class="bigbtn__sub" id="call-sub">048-653-1038</span>
+        </span>
+      </a>
+      <button class="bigbtn bigbtn--paper" id="show" type="button">
+        <span class="bigbtn__icon"><svg aria-hidden="true"><use href="#i-show"/></svg></span>
+        <span class="bigbtn__text">
+          <span class="bigbtn__main">店で画面を見せる</span>
+          <span class="bigbtn__sub">注文メモを大きく表示します</span>
+        </span>
+      </button>
+    </div>
+    <p class="hint" id="hint" role="status"></p>
+    <p class="note">日によって、ご用意できない品があります。</p>
+  </section>
+</main>
+
+<footer class="footer footer--order">
+  <p class="footer__name">友多加亭</p>
+  <p>〒330-0851 埼玉県さいたま市大宮区櫛引町1-617-3</p>
+  <p>電話 <a href="tel:0486531038" data-tel>048-653-1038</a></p>
+  <p>毎日 11:00〜24:00・年中無休</p>
+</footer>
+
+<div class="cartbar">
+  <p class="cartbar__sum" id="cart-sum" aria-live="polite">まだ選んでいません</p>
+  <a class="cartbar__go" href="#memo">注文メモへ</a>
+</div>
+
+<dialog class="show" id="show-dialog" aria-labelledby="show-title">
+  <div class="show__inner">
+    <div class="show__head">
+      <img src="images/mascot-love.png" width="557" height="560" alt="">
+      <h2 class="show__title" id="show-title">持ち帰りの注文です</h2>
+    </div>
+    <ul class="show__list" id="show-list"></ul>
+    <p class="show__line"><span>合計</span><span><b id="show-total">0</b>円</span></p>
+    <p class="show__line show__line--time"><span>受け取り</span><b id="show-time"></b></p>
+    <p class="show__pay">現金で支払います</p>
+    <form method="dialog" class="show__close"><button class="btn btn--ink" type="submit">とじる</button></form>
+  </div>
+</dialog>
+
+<script src="js/shop-data.js?v=4"></script>
+<script src="js/main.js?v=4"></script>
+<script src="js/takeout.js?v=4"></script>
+</body>
+</html>
