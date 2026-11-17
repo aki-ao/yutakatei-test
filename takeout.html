@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Yomogi&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=4">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
 
@@ -48,7 +48,7 @@
   </ul>
   <ol class="steps" aria-label="注文の流れ">
     <li>メニューを<br>えらぶ</li>
-    <li>電話で<br>注文する</li>
+    <li>注文を<br>送る</li>
     <li>お店で<br>受け取る</li>
   </ol>
 </header>
@@ -90,21 +90,30 @@
       </div>
     </div>
 
+    <div class="who">
+      <label class="who__field" for="cust-name">お名前</label>
+      <input class="who__input" id="cust-name" type="text" autocomplete="name" maxlength="30" placeholder="例：やまだ">
+      <label class="who__field" for="cust-tel">電話番号</label>
+      <input class="who__input" id="cust-tel" type="tel" inputmode="tel" autocomplete="tel" maxlength="13" placeholder="例：09012345678">
+      <input class="who__hp" id="cust-web" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="who__note">ご注文の確認のお電話にだけ使います。</p>
+    </div>
+
     <div class="send">
-      <a class="bigbtn bigbtn--takeout" id="call" href="tel:0486531038" data-tel="keep">
+      <button class="bigbtn bigbtn--takeout" id="order" type="button">
+        <span class="bigbtn__icon"><svg aria-hidden="true"><use href="#i-show"/></svg></span>
+        <span class="bigbtn__text">
+          <span class="bigbtn__main" id="order-main">注文する</span>
+          <span class="bigbtn__sub">お店から確認のお電話をします</span>
+        </span>
+      </button>
+      <a class="bigbtn bigbtn--paper" id="call" href="tel:0486531038" data-tel="keep">
         <span class="bigbtn__icon"><svg aria-hidden="true"><use href="#i-phone"/></svg></span>
         <span class="bigbtn__text">
           <span class="bigbtn__main">電話で注文する</span>
           <span class="bigbtn__sub" id="call-sub">048-653-1038</span>
         </span>
       </a>
-      <button class="bigbtn bigbtn--paper" id="show" type="button">
-        <span class="bigbtn__icon"><svg aria-hidden="true"><use href="#i-show"/></svg></span>
-        <span class="bigbtn__text">
-          <span class="bigbtn__main">店で画面を見せる</span>
-          <span class="bigbtn__sub">注文メモを大きく表示します</span>
-        </span>
-      </button>
     </div>
     <p class="hint" id="hint" role="status"></p>
     <p class="note">日によって、ご用意できない品があります。</p>
@@ -123,22 +132,16 @@
   <a class="cartbar__go" href="#memo">注文メモへ</a>
 </div>
 
-<dialog class="show" id="show-dialog" aria-labelledby="show-title">
-  <div class="show__inner">
-    <div class="show__head">
-      <img src="images/mascot-love.png" width="557" height="560" alt="">
-      <h2 class="show__title" id="show-title">持ち帰りの注文です</h2>
-    </div>
-    <ul class="show__list" id="show-list"></ul>
-    <p class="show__line"><span>合計</span><span><b id="show-total">0</b>円</span></p>
-    <p class="show__line show__line--time"><span>受け取り</span><b id="show-time"></b></p>
-    <p class="show__pay">現金で支払います</p>
-    <form method="dialog" class="show__close"><button class="btn btn--ink" type="submit">とじる</button></form>
-  </div>
+<dialog class="note" id="result" aria-labelledby="result-title">
+  <img src="images/mascot-love.png" width="557" height="560" alt="" class="note__mascot">
+  <h2 id="result-title"></h2>
+  <p id="result-text"></p>
+  <p><a class="btn btn--paper" href="tel:0486531038" data-tel="keep"><svg aria-hidden="true"><use href="#i-phone"/></svg>048-653-1038</a></p>
+  <form method="dialog"><button class="btn btn--ink" type="submit">とじる</button></form>
 </dialog>
 
-<script src="js/shop-data.js?v=4"></script>
-<script src="js/main.js?v=4"></script>
-<script src="js/takeout.js?v=4"></script>
+<script src="js/shop-data.js?v=6"></script>
+<script src="js/main.js?v=6"></script>
+<script src="js/takeout.js?v=6"></script>
 </body>
 </html>

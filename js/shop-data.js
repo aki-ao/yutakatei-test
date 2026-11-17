@@ -36,6 +36,8 @@ window.SHOP = {
 
   // 持ち帰りメニュー（店の配布チラシより）
   takeout: {
+    // 注文の送り先（Google Apps Script の URL）。空のあいだは、注文ボタンを押しても送信しない。
+    orderUrl: "",
     slotMinutes: 15, // 受け取り時間のきざみ
     leadMinutes: 20, // いまから何分後を最短の受け取り時間にするか（仮）
     bento: [

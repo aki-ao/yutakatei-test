@@ -13,6 +13,8 @@
   // 注文の中身。キーは「品ID|味」。メニューの並び順のまま保持する。
   var lines = [];
   var byKey = {};
+  var current = { lines: [], total: 0, pickup: "" }; // いまの注文メモの中身
+  var sending = false;
 
   function $(id) { return document.getElementById(id); }
 
@@ -171,7 +173,7 @@
     $("memo-empty").hidden = chosen.length > 0;
     $("memo-body").hidden = chosen.length === 0;
 
-    [$("memo-list"), $("show-list")].forEach(function (list) {
+    [$("memo-list")].forEach(function (list) {
       list.textContent = "";
       chosen.forEach(function (line) {
         var li = el("li");
@@ -180,9 +182,12 @@
       });
     });
     $("memo-total").textContent = U.yen(total);
-    $("show-total").textContent = U.yen(total);
     $("memo-time").textContent = timeLabel;
-    $("show-time").textContent = timeLabel;
+    current = {
+      lines: chosen.map(function (line) { return { label: lineLabel(line), qty: line.qty, price: line.item.price }; }),
+      total: total,
+      pickup: timeLabel,
+    };
 
     var items = chosen.map(function (line) {
       return lineLabel(line) + "を" + (line.qty < 10 ? line.qty + "つ" : line.qty + "個");
@@ -200,7 +205,7 @@
     }
 
     $("call").classList.toggle("is-disabled", chosen.length === 0);
-    $("show").classList.toggle("is-disabled", chosen.length === 0);
+    $("order").classList.toggle("is-disabled", chosen.length === 0);
     if (chosen.length) $("hint").textContent = "";
     return chosen.length;
   }
@@ -221,10 +226,63 @@
   pickup.addEventListener("change", render);
 
   $("call").addEventListener("click", needChoice);
-  $("show").addEventListener("click", function (e) {
-    if (needChoice(e)) return;
-    var dialog = $("show-dialog");
+  /* ---------- 注文を送る ---------- */
+
+  function showResult(title, text) {
+    $("result-title").textContent = title;
+    $("result-text").textContent = text;
+    var dialog = $("result");
     if (dialog.showModal) dialog.showModal();
+  }
+
+  function warn(text, field) {
+    $("hint").textContent = text;
+    if (field) field.focus();
+  }
+
+  var FAIL_TEXT = "お手数ですが、お電話でご注文ください。";
+  var ERRORS = {
+    closed: ["ただいま営業時間外です", SHOP.hours.open + " からご注文いただけます。"],
+    busy: ["ただいま混み合っています", FAIL_TEXT],
+  };
+
+  $("order").addEventListener("click", function (e) {
+    if (sending || needChoice(e)) return;
+    var name = $("cust-name").value.trim();
+    var tel = $("cust-tel").value.replace(/[^0-9]/g, "");
+    if (!name) return warn("お名前を入れてください。", $("cust-name"));
+    if (!/^0\d{9,10}$/.test(tel)) return warn("電話番号を入れてください（例：09012345678）。", $("cust-tel"));
+    if (!U.isOpen()) return showResult(ERRORS.closed[0], ERRORS.closed[1]);
+    if (!T.orderUrl) {
+      return showResult("テスト版です", "注文の送り先がまだ設定されていないため、送信されません。" + FAIL_TEXT);
+    }
+
+    sending = true;
+    $("order-main").textContent = "送っています…";
+    // text/plain で送る（Google Apps Script は事前確認つきのリクエストを受けられないため）
+    fetch(T.orderUrl, {
+      method: "POST",
+      body: JSON.stringify({
+        name: name, tel: tel, website: $("cust-web").value,
+        lines: current.lines, total: current.total, pickup: current.pickup,
+      }),
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (res) {
+        if (res.ok) {
+          showResult("注文を送りました",
+            "受付番号 " + res.id + "。お店から確認のお電話をします。お電話で注文が確定します。" +
+            "10分たっても電話がないときは、お手数ですがお電話ください。");
+        } else {
+          var known = ERRORS[res.error];
+          showResult(known ? known[0] : "送れませんでした", known ? known[1] : FAIL_TEXT);
+        }
+      })
+      .catch(function () { showResult("送れませんでした", FAIL_TEXT); })
+      .then(function () {
+        sending = false;
+        $("order-main").textContent = "注文する";
+      });
   });
 
   var closed = $("closed-note");
